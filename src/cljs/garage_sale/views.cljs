@@ -9,7 +9,7 @@
       [:table
         [:thead
           [:tr
-            [:th "Sold?"]
+            [:th "Sold"]
             [:th "Serial"]
             [:th "Name"]
             [:th "Comment"]
@@ -23,7 +23,7 @@
             [:tr
               [:td
                 [:input {:type "checkbox"
-                         :checked (:sold? game)
+                         :checked (:sold game)
                          :on-change #(rf/dispatch [:toggle-sell-game game])}]]
               [:td (str (:id game))]
               [:td (str (:name game))]

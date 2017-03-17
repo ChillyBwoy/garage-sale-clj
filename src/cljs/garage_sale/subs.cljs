@@ -16,5 +16,5 @@
   :sold-total
   (fn [db _]
     (let [games (:games db)
-          games-sold (filter #(:sold? %) games)]
+          games-sold (filter #(:sold %) games)]
       (reduce + (map #(:price %) games-sold)))))

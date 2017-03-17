@@ -22,6 +22,6 @@
   :toggle-sell-game
   (fn [db [_ game]]
     (let [id (:id game)
-          games (map #(if (= id (:id %)) (assoc % :sold? (not (:sold? %))) %)
+          games (map #(if (= id (:id %)) (assoc % :sold (not (:sold %))) %)
                      (:games db))]
       (assoc db :games games))))
