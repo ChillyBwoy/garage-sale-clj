@@ -16,3 +16,12 @@
   :set-name
   (fn [db [_ name]]
     (assoc db :name name)))
+
+
+(rf/reg-event-db
+  :toggle-sell-game
+  (fn [db [_ game]]
+    (let [id (:id game)
+          games (map #(if (= id (:id %)) (assoc % :sold? (not (:sold? %))) %)
+                     (:games db))]
+      (assoc db :games games))))

@@ -2,45 +2,43 @@
     (:require [re-frame.core :as rf]))
 
 
-
 (defn games-list []
-  (let [games (rf/subscribe [:games])]
+  (let [games (rf/subscribe [:games])
+        total (rf/subscribe [:sold-total])]
     (fn []
       [:table
         [:thead
           [:tr
+            [:th "Sold?"]
             [:th "Serial"]
             [:th "Name"]
             [:th "Comment"]
             [:th "Price"]]]
+        [:tfoot
+          [:tr
+            [:td {:colSpan 5} (str "Total:" @total)]]]
         [:tbody
           (for [game @games]
-            ^{:key (:serial game)}
+           ^{:key (:id game)}
             [:tr
-              [:td (str (:serial game))]
+              [:td
+                [:input {:type "checkbox"
+                         :checked (:sold? game)
+                         :on-change #(rf/dispatch [:toggle-sell-game game])}]]
+              [:td (str (:id game))]
               [:td (str (:name game))]
               [:td (str (:comment game))]
               [:td (str (:price game))]])]])))
 
 
-(defn edit-name []
-  (let [name (rf/subscribe [:name])]
-    (fn []
-      [:label
-        [:span "Application name: "]
-        [:input {:type "text"
-                 :value @name
-                 :on-change #(rf/dispatch [:set-name (-> % .-target .-value)])}]])))
-
 ;; home
+; #(rf/dispatch [:set-name (-> % .-target .-value)])
 
 (defn home-panel []
-  (let [name (rf/subscribe [:name])]
-    (fn []
-      [:div (str "Hello from " @name ". This is the Home Page.")
-       [edit-name]
-       [games-list]
-       [:div [:a {:href "#/about"} "go to About Page"]]])))
+  (fn []
+    [:div
+     [games-list]
+     [:div [:a {:href "#/about"} "go to About Page"]]]))
 
 
 ;; about
