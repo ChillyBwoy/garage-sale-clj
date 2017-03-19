@@ -1,55 +1,14 @@
 (ns garage-sale.views
-    (:require [re-frame.core :as rf]))
-
-
-(defn games-list []
-  (let [games (rf/subscribe [:games])
-        total (rf/subscribe [:sold-total])]
-    (fn []
-      [:table
-        [:thead
-          [:tr
-            [:th "Sold"]
-            [:th "Serial"]
-            [:th "Name"]
-            [:th "Comment"]
-            [:th "Price"]]]
-        [:tfoot
-          [:tr
-            [:td {:colSpan 5} (str "Total:" @total)]]]
-        [:tbody
-          (for [game @games]
-           ^{:key (:id game)}
-            [:tr
-              [:td
-                [:input {:type "checkbox"
-                         :checked (:sold game)
-                         :on-change #(rf/dispatch [:toggle-sell-game game])}]]
-              [:td (str (:id game))]
-              [:td (str (:name game))]
-              [:td (str (:comment game))]
-              [:td (str (:price game))]])]])))
-
-
-;; home
-; #(rf/dispatch [:set-name (-> % .-target .-value)])
+  (:require [re-frame.core :as rf]
+            [garage-sale.games.views :as games]))
 
 (defn home-panel []
   (fn []
-    [:div
-     [games-list]
-     [:div [:a {:href "#/about"} "go to About Page"]]]))
-
-
-;; about
+    [games/games-view]))
 
 (defn about-panel []
   (fn []
-    [:div "This is the About Page."
-     [:div [:a {:href "#/"} "go to Home Page"]]]))
-
-
-;; main
+    [:div "This is the About Page."]))
 
 (defn- panels [panel-name]
   (case panel-name
@@ -60,7 +19,22 @@
 (defn show-panel [panel-name]
   [panels panel-name])
 
+(defn navigation []
+  (let [total (rf/subscribe [:total])
+        total-sold (rf/subscribe [:total-sold])]
+    (fn []
+      [:nav
+        [:ul
+          [:li
+            [:a {:href "#/"} "Home"]]
+          [:li
+            [:a {:href "#/about"} "About"]]]])))
+
+
 (defn main-panel []
   (let [active-panel (rf/subscribe [:active-panel])]
     (fn []
-      [show-panel @active-panel])))
+      [:div {:class "layout"}
+        [navigation]
+        [:h1 "Garage Sale"]
+        [show-panel @active-panel]])))

@@ -13,8 +13,14 @@
     (:games db)))
 
 (rf/reg-sub
-  :sold-total
+  :total-sold
   (fn [db _]
     (let [games (:games db)
           games-sold (filter #(:sold %) games)]
       (reduce + (map #(:price %) games-sold)))))
+
+(rf/reg-sub
+  :total
+  (fn [db _]
+    (let [games (:games db)]
+      (reduce + (map #(:price %) games)))))

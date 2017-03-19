@@ -1,6 +1,7 @@
 (defproject garage-sale "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.229"]
+                 [org.clojure/core.async "0.3.442"]
                  [reagent "0.6.0"]
                  [re-frame "0.9.2"]
                  [re-frisk "0.3.2"]
@@ -9,6 +10,7 @@
                  [ns-tracker "0.3.0"]
                  [compojure "1.5.0"]
                  [yogthos/config "0.8"]
+                 [cljs-ajax "0.5.8"]
                  [ring "1.4.0"]
                  [com.datomic/datomic-free "0.9.5561"]]
 

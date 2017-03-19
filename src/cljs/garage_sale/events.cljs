@@ -1,5 +1,7 @@
 (ns garage-sale.events
     (:require [re-frame.core :as rf]
+              [clojure.walk :refer [keywordize-keys]]
+              [ajax.core :as ajax]
               [garage-sale.db :as db]))
 
 (rf/reg-event-db
@@ -25,3 +27,24 @@
           games (map #(if (= id (:id %)) (assoc % :sold (not (:sold %))) %)
                      (:games db))]
       (assoc db :games games))))
+
+(rf/reg-event-db
+  :fetch-games
+  (fn [db _]
+    (ajax/GET "/games.json"
+      {:handler #(rf/dispatch [:fetch-games-success %1])
+       :error-handler #(rf/dispatch [:fetch-games-error %1])})
+    (assoc db :loading? true)))
+
+(rf/reg-event-db
+  :fetch-games-success
+  (fn [db [_ response]]
+    (-> db
+        (assoc :loading? false)
+        (assoc :games (map #(keywordize-keys %) (js->clj response))))))
+
+(rf/reg-event-db
+  :fetch-games-error
+  (fn [db _]
+    (-> db
+        (assoc :loading? false))))
